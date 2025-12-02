@@ -23,11 +23,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.dylowen.days.Day1
+import com.dylowen.days.*
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-private val Days = listOf(Day1)
+private val Days = listOf(Day1, Day2)
 
 sealed interface Path {
     val title: String
