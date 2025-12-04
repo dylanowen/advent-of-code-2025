@@ -19,13 +19,15 @@ class Grid2<T>(private val cells: MutableList<T>, val width: Int) : Iterable<T> 
     operator fun get(pos: Pos2): T? = get(pos.x, pos.y)
 
     operator fun get(x: Int, y: Int): T? = if (x in widthRange && y in heightRange) {
-        cells[y * width + x]
+        cells[xyToIndex(x, y)]
     } else {
         null
     }
 
+    operator fun set(pos: Pos2, value: T): T? = set(pos.x, pos.y, value)
+
     operator fun set(x: Int, y: Int, value: T): T? = if (x in widthRange && y in heightRange) {
-        val i = y * width + x
+        val i = xyToIndex(x, y)
         val previous = cells[i]
         cells[i] = value
         previous
@@ -35,6 +37,8 @@ class Grid2<T>(private val cells: MutableList<T>, val width: Int) : Iterable<T> 
 
     fun entries(): List<Entry2<T>> = cells.withIndex().map { (i, value) -> Entry2(indexToXy(i), value) }
 
+    fun copy(): Grid2<T> = Grid2(cells.toMutableList(), width)
+
     override fun iterator(): Iterator<T> = cells.iterator()
 
     private fun xyToIndex(x: Int, y: Int): Int = y * width + x
@@ -43,7 +47,7 @@ class Grid2<T>(private val cells: MutableList<T>, val width: Int) : Iterable<T> 
 }
 
 data class Pos2(val x: Int, val y: Int) {
-    fun neighbors(dirs: List<Dir> = Dir.MANHATTAN): List<Pos2> = dirs.map(::neighbor)
+    fun neighbors(dirs: List<Dir> = Dir.ALL): List<Pos2> = dirs.map(::neighbor)
 
     fun neighbor(dir: Dir): Pos2 = when (dir) {
         Dir.N -> Pos2(x, y - 1)
