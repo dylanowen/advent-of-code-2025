@@ -20,12 +20,8 @@ interface DaySolution {
     fun part2(): Problem
 }
 
-sealed interface Problem {
-    @Composable
-    fun render()
-}
+interface Problem {
 
-fun interface SimpleProblem : Problem {
     fun result(): Any
 
     private fun safeResult(): String = try {
@@ -35,7 +31,18 @@ fun interface SimpleProblem : Problem {
     }
 
     @Composable
-    override fun render() {
+    fun answer() {
         SelectableTextWithCopy(safeResult())
+    }
+
+    @Composable
+    fun render()
+}
+
+fun interface SimpleProblem : Problem {
+
+    @Composable
+    override fun render() {
+       answer()
     }
 }

@@ -1,6 +1,16 @@
 package com.dylowen.days
 
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.dylowen.*
+import kotlinx.coroutines.delay
 
 class Day4(input: String) : DaySolution {
     val grid = Grid2(
@@ -9,10 +19,47 @@ class Day4(input: String) : DaySolution {
     )
 
     override fun part1(): Problem = SimpleProblem {
-        grid.tpEntries().count(grid::canRemove)
+        filteredGrids().first().removedRolls(grid)
     }
 
-    override fun part2(): Problem = SimpleProblem {
+    override fun part2(): Problem = object : Problem {
+
+        override fun result(): Any {
+            return filteredGrids().last().removedRolls(grid)
+        }
+
+        val cellSize = 3F
+        val frameTime = 200L
+        @Composable
+        override fun render() {
+            val iterator = remember { filteredGrids().iterator() }
+            var currentGrid by remember { mutableStateOf(iterator.next()) }
+
+            LaunchedEffect(Unit) {
+                while (true) {
+                    delay(frameTime)
+                    if (iterator.hasNext()) {
+                        currentGrid = iterator.next()
+                    }
+                }
+            }
+
+            Column {
+                Canvas(modifier = Modifier.size((currentGrid.width * cellSize).dp, (grid.height * cellSize).dp)) {
+                    for ((pos, value) in currentGrid.entries()) {
+                        this.drawRect(
+                            color = if (value == '@') Color.LightGray else Color.DarkGray,
+                            topLeft = Offset(pos.x * cellSize, pos.y * cellSize),
+                            size = Size(cellSize, cellSize)
+                        )
+                    }
+                }
+                SelectableTextWithCopy(currentGrid.removedRolls(grid).toString())
+            }
+        }
+    }
+
+    private fun filteredGrids() = sequence {
         var notDone = true
         var workingGrid = grid.copy()
         var removedRolls = 0
@@ -26,9 +73,9 @@ class Day4(input: String) : DaySolution {
                     removedRolls++
                 }
             }
+            yield(nextGrid)
             workingGrid = nextGrid
         }
-        removedRolls
     }
 
     companion object Companion : Day {
@@ -56,10 +103,11 @@ class Day4(input: String) : DaySolution {
 fun Grid2<Char>.tpEntries() = this.entries().mapNotNull { (pos, value) ->
     if (value == '@') {
         pos
-    }
-    else {
+    } else {
         null
     }
 }
 
 fun Grid2<Char>.canRemove(pos: Pos2) = pos.neighbors().count { this[it] == '@' } < 4
+
+fun Grid2<Char>.removedRolls(other: Grid2<Char>) = this.entries().count { (pos, value) -> value != other[pos] }

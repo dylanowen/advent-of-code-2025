@@ -104,6 +104,10 @@ fun App(
 fun DayView(day: Day) {
     var input by remember { mutableStateOf("") }
 
+    LaunchedEffect(Unit) {
+        input = day.defaultInput()
+    }
+
     Column {
         if (input.trim().isNotEmpty()) {
             val sample = runCatching { day.sample() }
@@ -111,10 +115,10 @@ fun DayView(day: Day) {
 
             Column {
                 sample.mapCatching { it?.part1() }.fold(
-                    onSuccess = { it?.render() }, onFailure = ::error
+                    onSuccess = { it?.answer() }, onFailure = ::error
                 )
                 sample.mapCatching { it?.part2() }.fold(
-                    onSuccess = { it?.render() }, onFailure = ::error
+                    onSuccess = { it?.answer() }, onFailure = ::error
                 )
                 solution.mapCatching { it.part1() }.fold(
                     onSuccess = { it.render() }, onFailure = ::error
@@ -132,9 +136,6 @@ fun DayView(day: Day) {
                 fontFamily = FontFamily.Monospace, fontSize = 14.sp
             ), maxLines = Int.MAX_VALUE, singleLine = false
         )
-    }
-    LaunchedEffect(Unit) {
-        input = day.defaultInput()
     }
 }
 

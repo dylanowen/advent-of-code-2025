@@ -8,13 +8,17 @@ class Grid2<T>(private val cells: MutableList<T>, val width: Int) : Iterable<T> 
 
     val height: Int = (cells.size + width - 1) / width
 
-    val widthRange: IntRange by lazy {
-        (0 until width)
-    }
+    val widthRange: IntRange
+        get() = 0 until width
 
-    val heightRange: IntRange by lazy {
-        (0 until height)
-    }
+    val heightRange: IntRange
+        get() = 0 until height
+
+
+    val size: Int
+        get() = cells.size
+
+    operator fun get(index: Int) = cells[index]
 
     operator fun get(pos: Pos2): T? = get(pos.x, pos.y)
 
