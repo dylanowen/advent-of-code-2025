@@ -27,7 +27,7 @@ import com.dylowen.days.*
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-private val Days = listOf(Day1, Day2, Day3, Day4)
+private val Days = listOf(Day1, Day2, Day3, Day4, Day5)
 
 sealed interface Path {
     val title: String
