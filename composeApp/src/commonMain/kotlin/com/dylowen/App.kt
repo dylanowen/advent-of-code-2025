@@ -92,10 +92,11 @@ fun App(
                         }
                     }
                 }
+
+                LaunchedEffect(navController) {
+                    onNavHostReady(navController)
+                }
             }
-        }
-        LaunchedEffect(navController) {
-            onNavHostReady(navController)
         }
     }
 }
