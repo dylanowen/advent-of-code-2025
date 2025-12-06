@@ -27,7 +27,7 @@ import com.dylowen.days.*
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-private val Days = listOf(Day1, Day2, Day3, Day4, Day5)
+private val Days = listOf(Day1, Day2, Day3, Day4, Day5, Day6)
 
 sealed interface Path {
     val title: String
@@ -50,7 +50,10 @@ data class DayPath(val day: Int) : Path {
 fun App(
     onNavHostReady: suspend (NavController) -> Unit = {}
 ) {
-    MaterialTheme {
+    MaterialTheme(
+        colorScheme = colorScheme,
+//        shapes = MaterialTheme.shapes
+    ) {
         val navController = rememberNavController()
 
         val backStackEntry by navController.currentBackStackEntryAsState()
@@ -115,12 +118,24 @@ fun DayView(day: Day) {
             val solution = runCatching { day.solution(input) }
 
             Column {
-                sample.mapCatching { it?.part1() }.fold(
-                    onSuccess = { it?.answer() }, onFailure = ::error
+                sample.mapCatching {
+                    if (it != null) {
+                        Pair(it.part1(), it.part2())
+                    } else {
+                        null
+                    }
+                }.fold(
+                    onSuccess = {
+                        if (it != null) {
+                            Text("Sample", style = MaterialTheme.typography.headlineSmall)
+                            Row {
+                                it.first.answer(Modifier.weight(1f))
+                                it.second.answer(Modifier.weight(1f))
+                            }
+                        }
+                    }, onFailure = ::error
                 )
-                sample.mapCatching { it?.part2() }.fold(
-                    onSuccess = { it?.answer() }, onFailure = ::error
-                )
+                Text("Solution", style = MaterialTheme.typography.headlineSmall)
                 solution.mapCatching { it.part1() }.fold(
                     onSuccess = { it.render() }, onFailure = ::error
                 )

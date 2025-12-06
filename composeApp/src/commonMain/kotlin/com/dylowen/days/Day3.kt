@@ -4,6 +4,7 @@ import com.dylowen.Day
 import com.dylowen.DaySolution
 import com.dylowen.Problem
 import com.dylowen.SimpleProblem
+import com.dylowen.pow
 
 class Day3(input: String) : DaySolution {
     val batteries = input.trim().split("\n")
@@ -56,12 +57,4 @@ class Day3(input: String) : DaySolution {
 
         override fun solution(input: String): DaySolution = Day3(input)
     }
-}
-
-fun Long.pow(exponent: Int): Long {
-    var result = 1L
-    repeat(exponent) {
-        result *= this
-    }
-    return result
 }

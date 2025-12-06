@@ -2,6 +2,7 @@ package com.dylowen
 
 import advent_of_code_2025.composeapp.generated.resources.Res
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 
 interface Day {
 
@@ -31,8 +32,8 @@ interface Problem {
     }
 
     @Composable
-    fun answer() {
-        SelectableTextWithCopy(safeResult())
+    fun answer(modifier: Modifier = Modifier) {
+        SelectableTextWithCopy(safeResult(), modifier)
     }
 
     @Composable
